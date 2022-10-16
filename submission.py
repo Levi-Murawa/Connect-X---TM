@@ -1,5 +1,5 @@
 import numpy as np
-
+import random
 
 def get_heuristic(grid, mark, config):
     num_threes = count_windows(grid, 3, mark, config)
@@ -130,9 +130,19 @@ def minimax(node, depth, maximizingPlayer, mark, config):
             child = drop_piece(node, col, mark%2+1, config)
             value = min(value, minimax(child, depth-1, True, mark, config))
         return value
+
+N_STEPS = 5
+
 def act(observation, configuration):
-    board = observation.board
-    columns = configuration.columns
-    return [c for c in range(columns) if board[c] == 0][0]
+    # Get list of valid moves
+    valid_moves = [c for c in range(configuration.columns) if observation.board[c] == 0]
+    # Convert the board to a 2D grid
+    grid = np.asarray(observation.board).reshape(configuration.rows, configuration.columns)
+    # Use the heuristic to assign a score to each possible board in the next step
+    scores = dict(zip(valid_moves, [score_move(grid, col, observation.mark, configuration, N_STEPS) for col in valid_moves]))
+    # Get a list of columns (moves) that maximize the heuristic
+    max_cols = [key for key in scores.keys() if scores[key] == max(scores.values())]
+    # Select at random from the maximizing columns
+    return random.choice(max_cols)
 
 
