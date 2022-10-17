@@ -131,7 +131,7 @@ def minimax(node, depth, maximizingPlayer, mark, config):
             value = min(value, minimax(child, depth-1, True, mark, config))
         return value
 
-N_STEPS = 5
+N_STEPS =
 
 def act(observation, configuration):
     # Get list of valid moves
